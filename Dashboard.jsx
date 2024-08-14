@@ -108,27 +108,31 @@ function Dashboard() {
     }, []);
 
     const fetchProjects = async () => {
-        try{
-            const shouldPost = DefaultData.some(d => !existingTitles.includes(d.title));
-            if(shouldPost){
-                for (const project of DefaultData) {
-                    const response = await fetch('http://localhost:3000/api/data', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(project),
-                    });
-                    const newProject = await response.json();
-                    dispatch({ type: PROJECT_CREATE, payload: newProject });
-                }
-             }else{
-                const response = await fetch('http://localhost:3000/api/data');
-                const data = await response.json();
-                dispatch({ type: SET_PROJECTS, payload: data });
-             }
-        }catch (error) {
-            console.error('Error fetching projects:', error);
+    try {
+        const response = await fetch('http://localhost:3000/api/data');
+        const existingProjects = await response.json();
+        const existingTitles = existingProjects.map(project => project.title);
+
+        const shouldPost = DefaultData.some(d => !existingTitles.includes(d.title));
+        
+        if (shouldPost) {
+            for (const project of DefaultData) {
+                const postResponse = await fetch('http://localhost:3000/api/data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(project),
+                });
+                const newProject = await postResponse.json();
+                dispatch({ type: PROJECT_CREATE, payload: newProject });
+            }
+        } else {
+            dispatch({ type: SET_PROJECTS, payload: existingProjects });
         }
-    };
+    } catch (error) {
+        console.error('Error fetching projects:', error);
+    }
+};
+
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;

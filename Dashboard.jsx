@@ -3,7 +3,7 @@
 import { useReducer, useEffect } from 'react';
 
 const PROJECT_CREATE = 'project/create';
-const PROJECT_UPDATE = 'project/update';
+const PROJECT_UPDATE = 'project/update'
 const PROJECT_DELETE = 'project/delete';
 const STATUS_TOGGLE = 'status/toggle';
 const SET_PROJECTS = 'set/projects';
